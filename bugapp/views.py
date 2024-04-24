@@ -33,6 +33,7 @@ def logout_view(request):
 
 
 @login_required
+
 def report_bug(request):
     if request.method == 'POST':
         bug_description = request.POST.get('bug_description')
@@ -58,7 +59,7 @@ def report_bug(request):
 @login_required
 def bug_list(request):
 
-    bugs_ordered_by_created_at = Bug.objects.order_by('-created_at')
+    bugs_ordered_by_created_at = Bug.objects.order_by('created_at')
 
     context = {
         'bugs': bugs_ordered_by_created_at,

@@ -36,6 +36,17 @@
             max-height: 60px; /* Set max height for the logo */
             margin-right: 15px; /* Add right margin to the logo */
         }
+        th {
+            text-align: center; /* Center-align text within <th> elements */
+        }
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            max-width: 200px; /* Optional: Set max width for table cells */
+            word-wrap: break-word; /* Break words to wrap text */
+        }
+        
+
     </style>
 </head>
 <body>
@@ -53,7 +64,7 @@
                 <!-- Navigation Links -->
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="btn btn-primary btn-primary-report" href="{% url 'bugapp:report_bug' %}">Report New Issue</a>
+                        <a class="btn btn-primary btn-primary-report" href="{% url 'bugapp:report_bug' %}">Report an Issue</a>
                     </li>
                     {% comment %} <li class="nav-item">
                         <a class="btn btn-primary btn-primary-download" href="{% url 'bugapp:download_bug_list_excel' %}">Download Bug List</a>
@@ -76,22 +87,31 @@
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
+                            <th scope="col">Sr.No.</th>
                             <th scope="col">Issue Description</th>
                             <th scope="col">Relevent Section (SF)</th>
                             <th scope="col">Project Owner</th>
                             <th scope="col">Submitted By</th>
                             <th scope="col">Created On</th>
+                            <th scope="col">T&A Update</th>
+                            <th scope="col">T&A Remarks</th>
+                            <th scope="col">Issue Closure Date</th>
                             {% comment %} <th scope="col">Created By</th> {% endcomment %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for bug in bugs %}
                         <tr>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{ bug.bug_description }}</td>
                             <td>{{ bug.relevent_section}}</td>
                             <td>{{ bug.project_owner }}</td>
                             <td>{{ bug.submitted_by }}</td>
                             <td>{{ bug.created_at|date:"M d, Y" }}</td> 
+                            <td>{{ bug.automation_team_update }}</td>
+                            <td>{{ bug.automation_team_remark }}</td> 
+                            <td>{{ bug.issue_closer_date|date:"M d, Y" }}</td> 
+                            
                             {% comment %} <td>{{ bug.created_by.first_name }}</td> {% endcomment %}
                         </tr>
                         {% endfor %}

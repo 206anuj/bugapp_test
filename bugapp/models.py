@@ -5,11 +5,14 @@ from django.contrib.auth.models import User
 
 class Bug(models.Model):
 
-    bug_description = models.CharField(max_length=64)
+    bug_description = models.CharField(max_length=1024)
     relevent_section = models.CharField(max_length=64)
-    project_owner = models.CharField(max_length=512)
+    project_owner = models.CharField(max_length=64)
     submitted_by = models.CharField(max_length=64)
     created_at = models.DateTimeField(auto_now_add=True)
+    automation_team_update = models.CharField(max_length=32, null=True, blank=True, default='')
+    automation_team_remark = models.CharField(max_length=1024, null=True, blank=True, default='')
+    issue_closer_date = models.DateTimeField(blank=True, null=True)
     # created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='bugs_created', blank=True, null=True) 
 
     def __str__(self):
