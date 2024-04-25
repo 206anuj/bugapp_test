@@ -87,15 +87,15 @@
                 <table class="table table-bordered">
                     <thead class="table-light">
                         <tr>
-                            <th scope="col">Sr.No.</th>
+                            <th scope="col">S.No.</th>
                             <th scope="col">Issue Description</th>
                             <th scope="col">Relevent Section (SF)</th>
                             <th scope="col">Project Owner</th>
                             <th scope="col">Submitted By</th>
                             <th scope="col">Created On</th>
-                            <th scope="col">T&A Update</th>
-                            <th scope="col">T&A Remarks</th>
-                            <th scope="col">Issue Closure Date</th>
+                            <th scope="col">Current Status</th>
+                            <th scope="col">Remarks</th>
+                            <th scope="col">Closure Date</th>
                             {% comment %} <th scope="col">Created By</th> {% endcomment %}
                         </tr>
                     </thead>
@@ -108,8 +108,23 @@
                             <td>{{ bug.project_owner }}</td>
                             <td>{{ bug.submitted_by }}</td>
                             <td>{{ bug.created_at|date:"M d, Y" }}</td> 
-                            <td>{{ bug.automation_team_update }}</td>
-                            <td>{{ bug.automation_team_remark }}</td> 
+                            <td>
+                                {% if bug.automation_team_update %}
+                                    {{ bug.automation_team_update | capfirst }}
+                                {% else %}
+                                    &nbsp;  {# Displaying a non-breaking space if the value is empty or None #}
+                                {% endif %}
+                            </td>                            
+                            <td>
+                                {% if bug.automation_team_remarke %}
+                                    {{ bug.automation_team_remark }}
+                                {% else %}
+                                    &nbsp;  {# Displaying a non-breaking space if the value is empty or None #}
+                                {% endif %}
+                            </td>
+                            
+                            {% comment %} <td>{{ bug.automation_team_update }}</td>
+                            <td>{{ bug.automation_team_remark }}</td>  {% endcomment %}
                             <td>{{ bug.issue_closer_date|date:"M d, Y" }}</td> 
                             
                             {% comment %} <td>{{ bug.created_by.first_name }}</td> {% endcomment %}
