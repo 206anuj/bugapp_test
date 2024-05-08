@@ -33,7 +33,6 @@ def logout_view(request):
 
 
 @login_required
-
 def report_bug(request):
     if request.method == 'POST':
         bug_description = request.POST.get('bug_description')
@@ -65,3 +64,45 @@ def bug_list(request):
         'bugs': bugs_ordered_by_created_at,
     }
     return render(request, 'bugapp/bug_list.html', context=context)
+
+
+@login_required
+def download_bug_list_excel(request):
+    # Retrieve Bug objects
+    bugs = Bug.objects.all()
+
+    # Create a new Excel workbook
+    wb = Workbook()
+    ws = wb.active
+
+    # Set custom number format to display date only (e.g., "yyyy-mm-dd")
+    date_style = NamedStyle(name='date_style', number_format='DD-MM-YYYY')  # YYYY-MM-DD
+
+    # Add headers to the Excel file
+    ws.append(['IssueDescription', 'ReleventSection (SF)', 'ProjectOwner', 'SubmittedBy', 'CreatedOn', 'CurrentStatus', 'Remarks', 'ClosureDate'])
+
+    # Iterate over each Bug object and add data to Excel
+    for bug in bugs:
+        # Convert created_at datetime to local timezone
+        local_created_at = timezone.localtime(bug.created_at)
+        local_issue_closer_date = timezone.localtime(bug.issue_closer_date)
+        # Add row data to Excel worksheet, formatting date using custom style
+        ws.append([bug.bug_description, bug.relevent_section, bug.project_owner, bug.submitted_by, local_created_at.date(), bug.automation_team_remark, bug.automation_team_update, local_issue_closer_date.date()])
+    
+    # Apply custom number format to the "Created At" column (column E, assuming it's the 5th column)
+    for cell in ws['E']:
+        cell.style = date_style
+
+    # Format the current date and time for the filename
+    current_datetime = timezone.now().strftime("%Y%m%d_%H%M%S")
+    # Set filename for the Excel file (including date and time)
+    filename = f"BugList_{current_datetime}.xlsx"
+
+    # Save the workbook to a response as a file attachment
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="{filename}"'
+
+    # Save the workbook content to the HttpResponse
+    wb.save(response)
+
+    return response
