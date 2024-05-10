@@ -85,9 +85,15 @@ def download_bug_list_excel(request):
     for bug in bugs:
         # Convert created_at datetime to local timezone
         local_created_at = timezone.localtime(bug.created_at)
-        local_issue_closer_date = timezone.localtime(bug.issue_closer_date)
+        
+        # Check if issue_closer_date is None
+        if bug.issue_closer_date:
+            local_issue_closer_date = timezone.localtime(bug.issue_closer_date).date()
+        else:
+            local_issue_closer_date = None
+        
         # Add row data to Excel worksheet, formatting date using custom style
-        ws.append([bug.bug_description, bug.relevent_section, bug.project_owner, bug.submitted_by, local_created_at.date(), bug.automation_team_remark, bug.automation_team_update, local_issue_closer_date.date()])
+        ws.append([bug.bug_description, bug.relevent_section, bug.project_owner, bug.submitted_by, local_created_at.date(), bug.automation_team_remark, bug.automation_team_update, local_issue_closer_date])
     
     # Apply custom number format to the "Created At" column (column E, assuming it's the 5th column)
     for cell in ws['E']:
